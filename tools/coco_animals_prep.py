@@ -65,7 +65,7 @@ def convert(args, seed=42):
     print(f"Final Unlabeled: {len(unlabeled_idx)} images")
     
     print("Creating annotation jsons")
-    # Train
+    #! Train
     out_train_annos = deepcopy(in_annos)
     annos_annotations = []
     annos_images = []
@@ -79,28 +79,28 @@ def convert(args, seed=42):
     out_train_annos['annotations'] = annos_annotations
     with open(os.path.join(out_annotations, 'instances_train2017.json'), 'w') as f:
         json.dump(out_train_annos, f)
-    # Val
+    #! Val
     out_val_annos = deepcopy(in_annos)
     annos_annotations = []
     annos_images = []
     for image in out_val_annos['images']:
         if image['id'] in val_idx:
             annos_images.append(image)
-            annotations_matched = [item for item in out_train_annos['annotations']
+            annotations_matched = [item for item in out_val_annos['annotations']
                                    if item['image_id'] == image['id']]
             annos_annotations.extend(annotations_matched)
     out_val_annos['images'] = annos_images
     out_val_annos['annotations'] = annos_annotations
     with open(os.path.join(out_annotations, 'instances_val2017.json'), 'w') as f:
         json.dump(out_val_annos, f)
-    # Unlabeled
+    #! Unlabeled
     out_unlabeled_annos = deepcopy(in_annos)
     annos_annotations = []
     annos_images = []
     for image in out_unlabeled_annos['images']:
         if image['id'] in unlabeled_idx:
             annos_images.append(image)
-            annotations_matched = [item for item in out_train_annos['annotations']
+            annotations_matched = [item for item in out_unlabeled_annos['annotations']
                                    if item['image_id'] == image['id']]
             annos_annotations.extend(annotations_matched)
     out_unlabeled_annos['images'] = annos_images
