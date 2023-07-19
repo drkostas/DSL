@@ -9,6 +9,6 @@
 #    $(dirname "$0")/train.py $CONFIG --launcher pytorch ${@:3}
 CONFIG=configs/fcos_semi/r50_caffe_mslonger_tricks_0.Xdata.py
 WORKDIR=workdir_coco/r50_caffe_mslonger_tricks_0.1data
-GPU=8
+GPU=1
 
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 PORT=29507 ./tools/dist_train.sh $CONFIG $GPU --work-dir $WORKDIR
+CUDA_VISIBLE_DEVICES=0 PORT=29507 ./tools/dist_train.sh $CONFIG $GPU --work-dir $WORKDIR

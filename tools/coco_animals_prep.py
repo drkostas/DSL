@@ -12,7 +12,7 @@ def convert(args, seed=42):
     out_annotations = os.path.join(args.output, 'annotations')
     out_train2017 = os.path.join(args.output, 'train2017')
     out_val2017 = os.path.join(args.output, 'val2017')
-    out_unlabeled2017 = os.path.join(args.output, 'unlabeled2017')
+    # out_unlabeled2017 = os.path.join(args.output, 'unlabeled2017')
     if not os.path.exists(args.output):
         os.mkdir(args.output)
     if not os.path.exists(out_annotations):
@@ -21,8 +21,8 @@ def convert(args, seed=42):
         os.mkdir(out_train2017)
     if not os.path.exists(out_val2017):
         os.mkdir(out_val2017)
-    if not os.path.exists(out_unlabeled2017):
-        os.mkdir(out_unlabeled2017)
+    # if not os.path.exists(out_unlabeled2017):
+    #     os.mkdir(out_unlabeled2017)
 
     print("Loading annotations")
     with open(os.path.join(args.input, 'annotations/instances_train2017.json')) as f:
@@ -54,15 +54,15 @@ def convert(args, seed=42):
     print(f"Train: {len(train_idx)} images")
     print(f"Val: {len(val_idx)} images")
     
-    dummy_y_train = np.zeros(len(train_idx))
-    train_idx, unlabeled_idx, _, _ = train_test_split(train_idx,
-                                                      dummy_y_train,
-                                                      train_size=(1.0 - args.labeled_perc),
-                                                      shuffle=True,
-                                                      random_state=seed)
+    # dummy_y_train = np.zeros(len(train_idx))
+    # train_idx, unlabeled_idx, _, _ = train_test_split(train_idx,
+    #                                                   dummy_y_train,
+    #                                                   train_size=(1.0 - args.labeled_perc),
+    #                                                   shuffle=True,
+    #                                                   random_state=seed)
     print(f"Final Train: {len(train_idx)} images")
     print(f"Final Val: {len(val_idx)} images")
-    print(f"Final Unlabeled: {len(unlabeled_idx)} images")
+    # print(f"Final Unlabeled: {len(unlabeled_idx)} images")
     
     print("Creating annotation jsons")
     #! Train
@@ -94,19 +94,19 @@ def convert(args, seed=42):
     with open(os.path.join(out_annotations, 'instances_val2017.json'), 'w') as f:
         json.dump(out_val_annos, f)
     #! Unlabeled
-    out_unlabeled_annos = deepcopy(in_annos)
-    annos_annotations = []
-    annos_images = []
-    for image in out_unlabeled_annos['images']:
-        if image['id'] in unlabeled_idx:
-            annos_images.append(image)
-            annotations_matched = [item for item in out_unlabeled_annos['annotations']
-                                   if item['image_id'] == image['id']]
-            annos_annotations.extend(annotations_matched)
-    out_unlabeled_annos['images'] = annos_images
-    out_unlabeled_annos['annotations'] = annos_annotations
-    with open(os.path.join(out_annotations, 'instances_unlabeled2017.json'), 'w') as f:
-        json.dump(out_unlabeled_annos, f)
+    # out_unlabeled_annos = deepcopy(in_annos)
+    # annos_annotations = []
+    # annos_images = []
+    # for image in out_unlabeled_annos['images']:
+    #     if image['id'] in unlabeled_idx:
+    #         annos_images.append(image)
+    #         annotations_matched = [item for item in out_unlabeled_annos['annotations']
+    #                                if item['image_id'] == image['id']]
+    #         annos_annotations.extend(annotations_matched)
+    # out_unlabeled_annos['images'] = annos_images
+    # out_unlabeled_annos['annotations'] = annos_annotations
+    # with open(os.path.join(out_annotations, 'instances_unlabeled2017.json'), 'w') as f:
+    #     json.dump(out_unlabeled_annos, f)
     
     # Create train2017 folder
     print("Copying images to train2017, val2017, unlabeled2017 folders")
@@ -115,8 +115,8 @@ def convert(args, seed=42):
             shutil.copy(os.path.join(args.input, 'train2017', image['file_name']), out_train2017)
         elif image['id'] in val_idx:
             shutil.copy(os.path.join(args.input, 'train2017', image['file_name']), out_val2017)
-        elif image['id'] in unlabeled_idx:
-            shutil.copy(os.path.join(args.input, 'train2017', image['file_name']), out_unlabeled2017)
+        # elif image['id'] in unlabeled_idx:
+        #     shutil.copy(os.path.join(args.input, 'train2017', image['file_name']), out_unlabeled2017)
 
 
 if __name__ == '__main__':
@@ -126,5 +126,6 @@ if __name__ == '__main__':
     parser.add_argument('--labeled_perc', type=float, default=0.1)
     parser.add_argument('--val_perc', type=float, default=0.07765803)
     args = parser.parse_args()
-    args.output = f"{args.output}_lab{args.labeled_perc:.2f}_val{args.val_perc:.2f}"
+    # args.output = f"{args.output}_lab{args.labeled_perc:.2f}_val{args.val_perc:.2f}"
+    args.output = f"{args.output}_val{args.val_perc:.2f}"
     convert(args)
